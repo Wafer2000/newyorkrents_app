@@ -1,19 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
+
 import 'package:newyorkrents_app/core/config/app_env.dart';
 import 'package:newyorkrents_app/core/storage/prefs_service.dart';
 import 'package:newyorkrents_app/features/catalog/domain/repositories/catalog_repository.dart';
+
+import 'package:newyorkrents_app/features/catalog/presentation/gellery/bloc/gallery_bloc.dart';
+import 'package:newyorkrents_app/features/catalog/presentation/gellery/pages/gallery_page.dart';
+
 import 'package:newyorkrents_app/features/catalog/presentation/detail/bloc/detail_bloc.dart';
 import 'package:newyorkrents_app/features/catalog/presentation/detail/bloc/detail_event.dart';
 import 'package:newyorkrents_app/features/catalog/presentation/detail/pages/product_detail_page.dart';
-import 'package:newyorkrents_app/features/catalog/presentation/gellery/bloc/gallery_bloc.dart';
-import 'package:newyorkrents_app/features/catalog/presentation/gellery/pages/gallery_page.dart';
-import 'package:provider/provider.dart';
+
+import 'package:newyorkrents_app/features/search/pages/search_page.dart';
 
 class AppRoutes {
   static const home = '/';
   static const product = '/product/:handle';
+  static const search = '/search/:q';
 }
 
 class AppRouter {
@@ -39,6 +45,13 @@ class AppRouter {
               create: (_) => DetailBloc(repo: repo)..add(DetailStarted(handle)),
               child: ProductDetailPage(handle: handle),
             );
+          },
+        ),
+        GoRoute(
+          path: AppRoutes.search,
+          builder: (context, state) {
+            final q = state.pathParameters['q'] ?? '';
+            return SearchPage(q: q);
           },
         ),
       ],

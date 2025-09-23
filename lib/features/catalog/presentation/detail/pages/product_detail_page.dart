@@ -46,7 +46,7 @@ class ProductDetailPage extends StatelessWidget {
                   if (p.meta.isNotEmpty)
                     Wrap(
                       spacing: 6, runSpacing: -8,
-                      children: p.meta.entries.map((e) => Chip(label: Text('${e.value}'))).toList(),
+                      children: p.meta.entries.map((e) => Chip(label: Text(e.value))).toList(),
                     ),
                   const SizedBox(height: 12),
                   if (p.descriptionHtml != null && p.descriptionHtml!.trim().isNotEmpty)

@@ -2,12 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:newyorkrents_app/core/config/app_env.dart';
+import 'package:newyorkrents_app/core/theme/app_dimensions.dart';
 import 'package:newyorkrents_app/features/catalog/presentation/gellery/bloc/gallery_bloc.dart';
 import 'package:newyorkrents_app/features/catalog/presentation/gellery/bloc/gallery_event.dart';
 import 'package:newyorkrents_app/features/catalog/presentation/gellery/bloc/gallery_state.dart';
 import 'package:newyorkrents_app/features/catalog/presentation/gellery/widgets/collections_bar.dart';
 import 'package:newyorkrents_app/features/catalog/presentation/gellery/widgets/filter_bar.dart';
+import 'package:newyorkrents_app/features/catalog/presentation/gellery/widgets/gallery_grid_helper.dart' as gh;
 import 'package:newyorkrents_app/features/catalog/presentation/gellery/widgets/product_card.dart';
+import 'package:newyorkrents_app/features/common/widgets/app_header.dart';
+import 'package:newyorkrents_app/features/common/widgets/mobile_menu_sheet.dart';
+import 'package:newyorkrents_app/features/common/widgets/search_sheet.dart';
 
 class GalleryPage extends StatefulWidget {
   final String initialHandle;
@@ -24,10 +29,46 @@ class _GalleryPageState extends State<GalleryPage> {
     context.read<GalleryBloc>().add(GalleryStarted(widget.initialHandle));
   }
 
+  void _openMenu() {
+    final items = AppEnv.collectionHandles;
+    if (items.isEmpty) return;
+    showModalBottomSheet(
+      context: context,
+      showDragHandle: true,
+      useSafeArea: true,
+      builder: (_) => MobileMenuSheet(
+        items: items,
+        onSelect: (h) {
+          Navigator.pop(context);
+          context.read<GalleryBloc>().add(GalleryStarted(h));
+        },
+      ),
+    );
+  }
+
+  void _openSearch() {
+    showModalBottomSheet(
+      context: context,
+      showDragHandle: true,
+      useSafeArea: true,
+      builder: (_) => SearchSheet(
+        onSubmit: (q) {
+          Navigator.pop(context);
+          if (q.trim().isNotEmpty) context.push('/search/$q');
+        },
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Galería')),
+      appBar: AppHeader(
+        onMenu: _openMenu,
+        onSearch: _openSearch,
+        onCart: () { /* TODO: navegar a /cart si lo habilitas */ },
+        // logo: Image.asset('assets/logo.png', height: 22), // opcional
+      ),
       body: BlocBuilder<GalleryBloc, GalleryState>(
         builder: (context, s) {
           if (s.status == GalleryStatus.loading && s.items.isEmpty) {
@@ -80,24 +121,31 @@ class _GalleryPageState extends State<GalleryPage> {
                   ),
                 ),
                 SliverPadding(
-                  padding: const EdgeInsets.all(12),
-                  sliver: SliverGrid(
-                    delegate: SliverChildBuilderDelegate(
-                      (context, i) {
-                        final item = s.items[i];
-                        return ProductCard(
-                          p: item,
-                          onTap: () => context.push('/product/${item.handle}'),
-                        );
-                      },
-                      childCount: s.items.length,
-                    ),
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      mainAxisSpacing: 12,
-                      crossAxisSpacing: 12,
-                      childAspectRatio: .78,
-                    ),
+                  padding: const EdgeInsets.all(AppDimens.screenPadding),
+                  sliver: SliverLayoutBuilder(
+                    builder: (context, constraints) {
+                      final width = constraints.crossAxisExtent;
+                      final cols = gh.gridColumnsForWidth(width);
+                      final aspect = gh.gridChildAspectRatio(width, AppDimens.screenPadding, AppDimens.gridGutter, cols);
+                      return SliverGrid(
+                        delegate: SliverChildBuilderDelegate(
+                          (context, i) {
+                            final item = s.items[i];
+                            return ProductCard(
+                              p: item,
+                              onTap: () => context.push('/product/${item.handle}'),
+                            );
+                          },
+                          childCount: s.items.length,
+                        ),
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: cols,
+                          mainAxisSpacing: AppDimens.gridGutter,
+                          crossAxisSpacing: AppDimens.gridGutter,
+                          childAspectRatio: aspect,
+                        ),
+                      );
+                    },
                   ),
                 ),
                 if (s.status == GalleryStatus.loading)

@@ -21,14 +21,17 @@ class AppRoot extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: buildProviders(prefs),
-      child: Builder(builder: (ctx) {
-        final router = AppRouter.build(ctx, prefs);
-        return MaterialApp.router(
-          debugShowCheckedModeBanner: false,
-          theme: AppTheme.light(),
-          routerConfig: router,
-        );
-      }),
+      child: Builder(
+        builder: (ctx) {
+          final router = AppRouter.build(ctx, prefs);
+          return MaterialApp.router(
+            theme: AppTheme.light(),
+            darkTheme: AppTheme.dark(),
+            themeMode: ThemeMode.system,
+            routerConfig: router,
+          );
+        },
+      ),
     );
   }
 }
