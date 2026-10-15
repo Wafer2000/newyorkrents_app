@@ -22,9 +22,9 @@ flutter doctor; flutter doctor --android-licenses
 
 ### 1) Variables de entorno
 
-**Desarrollo (`.env.dev`)** – ejemplo con tus datos:
+**Desarrollo (`.env.dev`)** – ejemplo con valores ficticios:
 ```powershell
-Set-Content -Path .env.dev -Value "SHOP_PUBLIC_HOST=newyorkrents.co`nSHOP_MYSHOPIFY_DOMAIN=wzkvr1-j0.myshopify.com`nSHOPIFY_API_VERSION=2025-07`nSTOREFRONT_TOKEN=YOUR_STOREFRONT_TOKEN`nPAGE_SIZE=12`nDEFAULT_SORT=CREATED`nDEFAULT_HANDLE=rooms`nCOLLECTION_HANDLES=rooms,manhattan,brooklyn,queens,bronx,aparment`nMF_LIST=custom.gender,custom.neighborhood`nMF_REF_MAP=custom.neighborhood=name"
+Set-Content -Path .env.dev -Value "SHOP_PUBLIC_HOST=example-store.com`nSHOP_MYSHOPIFY_DOMAIN=example-store.myshopify.com`nSHOPIFY_API_VERSION=2025-07`nSTOREFRONT_TOKEN=YOUR_STOREFRONT_TOKEN`nPAGE_SIZE=12`nDEFAULT_SORT=CREATED`nDEFAULT_HANDLE=rooms`nCOLLECTION_HANDLES=rooms,manhattan,brooklyn,queens,bronx,aparment`nMF_LIST=custom.gender,custom.neighborhood`nMF_REF_MAP=custom.neighborhood=name"
 ```
 
 **Producción (`.env.prod`)** – placeholder (completar luego):
@@ -113,10 +113,10 @@ lib/
 
 | Variable | Ejemplo | Descripción |
 |---|---|---|
-| `SHOP_PUBLIC_HOST` | `newyorkrents.co` | Dominio público (opcional, fallback del endpoint). |
-| `SHOP_MYSHOPIFY_DOMAIN` | `wzkvr1-j0.myshopify.com` | Dominio myshopify (endpoint Storefront). |
+| `SHOP_PUBLIC_HOST` | `example-store.com` | Dominio público (opcional, fallback del endpoint). |
+| `SHOP_MYSHOPIFY_DOMAIN` | `example-store.myshopify.com` | Dominio myshopify (endpoint Storefront). |
 | `SHOPIFY_API_VERSION` | `2025-07` | Versión Storefront API. |
-| `STOREFRONT_TOKEN` | `...` | Storefront API access token. |
+| `STOREFRONT_TOKEN` | `YOUR_STOREFRONT_TOKEN` | Storefront API access token. |
 | `PAGE_SIZE` | `12` | Tamaño de página para paginación. |
 | `DEFAULT_SORT` | `CREATED` | Clave de orden (ProductCollectionSortKeys). |
 | `DEFAULT_HANDLE` | `rooms` | Colección inicial. |
@@ -175,7 +175,7 @@ theme: AppTheme.light()
 
 Verifica que tu token/colección devuelven datos:
 ```powershell
-curl -X POST https://wzkvr1-j0.myshopify.com/api/2025-07/graphql.json -H "Content-Type: application/json" -H "X-Shopify-Storefront-Access-Token: YOUR_STOREFRONT_TOKEN" -d "{"query":"{ collection(handle:\"rooms\"){ title products(first:1){ edges{ node{ title featuredImage{ url } priceRange{ minVariantPrice{ amount currencyCode } } } } } } }"}"
+curl -X POST https://example-store.myshopify.com/api/2025-07/graphql.json -H "Content-Type: application/json" -H "X-Shopify-Storefront-Access-Token: YOUR_STOREFRONT_TOKEN" -d "{"query":"{ collection(handle:\"rooms\"){ title products(first:1){ edges{ node{ title featuredImage{ url } priceRange{ minVariantPrice{ amount currencyCode } } } } } } }"}"
 ```
 
 ---
@@ -217,3 +217,14 @@ Add-Content .env.dev "`nCOLLECTION_HANDLES=rooms,manhattan,brooklyn,queens,bronx
 ## 📄 Licencia
 
 Uso interno / proyecto demo. Ajusta según tu necesidad.
+
+
+## Checklist antes de publicar el repositorio
+
+- Confirmar que la publicación del código está autorizada por sus propietarios y terceros implicados.
+- Revocar o rotar el Storefront token anterior si sigue habilitado. El valor reemplazado del README permanece en commits antiguos.
+- Revisar y sanear **todo el historial Git**, no solo la rama actual, antes de cambiar a público.
+- Comprobar archivos de entorno, recursos visuales, datos de clientes y licencias.
+- Probar `flutter analyze`, `flutter test` y los builds aplicables.
+
+Este proyecto sigue privado hasta completar la revisión.
