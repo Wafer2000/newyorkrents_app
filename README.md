@@ -24,7 +24,7 @@ flutter doctor; flutter doctor --android-licenses
 
 **Desarrollo (`.env.dev`)** – ejemplo con tus datos:
 ```powershell
-Set-Content -Path .env.dev -Value "SHOP_PUBLIC_HOST=newyorkrents.co`nSHOP_MYSHOPIFY_DOMAIN=wzkvr1-j0.myshopify.com`nSHOPIFY_API_VERSION=2025-07`nSTOREFRONT_TOKEN=08d2985753a03be8da132fe8796623d4`nPAGE_SIZE=12`nDEFAULT_SORT=CREATED`nDEFAULT_HANDLE=rooms`nCOLLECTION_HANDLES=rooms,manhattan,brooklyn,queens,bronx,aparment`nMF_LIST=custom.gender,custom.neighborhood`nMF_REF_MAP=custom.neighborhood=name"
+Set-Content -Path .env.dev -Value "SHOP_PUBLIC_HOST=newyorkrents.co`nSHOP_MYSHOPIFY_DOMAIN=wzkvr1-j0.myshopify.com`nSHOPIFY_API_VERSION=2025-07`nSTOREFRONT_TOKEN=YOUR_STOREFRONT_TOKEN`nPAGE_SIZE=12`nDEFAULT_SORT=CREATED`nDEFAULT_HANDLE=rooms`nCOLLECTION_HANDLES=rooms,manhattan,brooklyn,queens,bronx,aparment`nMF_LIST=custom.gender,custom.neighborhood`nMF_REF_MAP=custom.neighborhood=name"
 ```
 
 **Producción (`.env.prod`)** – placeholder (completar luego):
@@ -175,7 +175,7 @@ theme: AppTheme.light()
 
 Verifica que tu token/colección devuelven datos:
 ```powershell
-curl -X POST https://wzkvr1-j0.myshopify.com/api/2025-07/graphql.json -H "Content-Type: application/json" -H "X-Shopify-Storefront-Access-Token: 08d2985753a03be8da132fe8796623d4" -d "{"query":"{ collection(handle:\"rooms\"){ title products(first:1){ edges{ node{ title featuredImage{ url } priceRange{ minVariantPrice{ amount currencyCode } } } } } } }"}"
+curl -X POST https://wzkvr1-j0.myshopify.com/api/2025-07/graphql.json -H "Content-Type: application/json" -H "X-Shopify-Storefront-Access-Token: YOUR_STOREFRONT_TOKEN" -d "{"query":"{ collection(handle:\"rooms\"){ title products(first:1){ edges{ node{ title featuredImage{ url } priceRange{ minVariantPrice{ amount currencyCode } } } } } } }"}"
 ```
 
 ---
